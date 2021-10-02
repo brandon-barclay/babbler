@@ -16,11 +16,25 @@
 
     []
 []
+[AuxVariables]
+  [velocity]
+    order = CONSTANT # Since "pressure" is approximated linearly, its gradient must be constant
+    family = MONOMIAL_VEC # A monomial interpolation means this is an elemental AuxVariable
+  []
+[]
 [Kernels]
     [diffusion]
         type = DarcyPressure
         variable = pressure
     []
+[]
+[AuxKernels]
+  [velocity]
+    type = DarcyVelocity
+    variable = velocity # Store volumetric flux vector in "velocity" variable from above
+    pressure = pressure # Couple to the "pressure" variable from above
+    execute_on = TIMESTEP_END # Perform calculation at the end of the solve step - after Kernels run
+  []
 []
 [Materials]
     [filter]
